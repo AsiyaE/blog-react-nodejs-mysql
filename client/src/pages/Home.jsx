@@ -5,8 +5,8 @@ const Home = () => {
   const posts = [
     {
       id: 1,
-      title: '27 Birds Painting',
-      description: 'Jennifer Lommers',
+      title: 'Bird facts',
+      description: 'Birds are vertebrate animals adapted for flight.Many can also run, jump, swim, and dive. Some, like penguins, have lost the ability to fly but retained their wings. Birds are found worldwide and in all habitats. The largest is the nine-foot-tall ostrich. The smallest is the two-inch-long bee hummingbird.',
       img: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/27-birds-jennifer-lommers.jpg',
     },
     {
