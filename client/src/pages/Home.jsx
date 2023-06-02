@@ -1,27 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Home = () => {
-  const posts = [
-    {
-      id: 1,
-      title: 'Bird facts',
-      description: 'Birds are vertebrate animals adapted for flight.Many can also run, jump, swim, and dive. Some, like penguins, have lost the ability to fly but retained their wings. Birds are found worldwide and in all habitats. The largest is the nine-foot-tall ostrich. The smallest is the two-inch-long bee hummingbird.',
-      img: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/27-birds-jennifer-lommers.jpg',
-    },
-    {
-      id: 2,
-      title: 'Chachi tree frog Painting',
-      description: 'Jasper Oostland',
-      img: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/chachi-tree-frog-jasper-oostland.jpg',
-    },
-    {
-      id: 3,
-      title: 'Dance Of The Longhorns Painting',
-      description: 'Marion Rose',
-      img: 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/dance-of-the-longhorns-marion-rose.jpg',
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+
+  const cat = useLocation().search;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/posts${cat}`);
+        setPosts(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [cat]);
 
   return (
     <div className="home">

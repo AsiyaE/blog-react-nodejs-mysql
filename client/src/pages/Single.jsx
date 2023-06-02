@@ -1,35 +1,65 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import moment from 'moment';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Edit from '../img/edit.png';
 import Delete from '../img/delete.png';
 import Menu from '../components/Menu';
+import { AuthContext } from '../context/authContext';
 
 const Single = () => {
+  const [post, setPost] = useState({});
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const postId = location.pathname.split('/')[2];
+  const { currentUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/posts/${postId}`);
+        setPost(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [postId]);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/posts/${postId}`);
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="single">
       <div className="content">
-        <img
-          src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/27-birds-jennifer-lommers.jpg"
-          alt=""
-        />
+        <img src={post?.img} alt="" />
         <div className="user">
-          <img
-            src="https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg?w=900&t=st=1683130621~exp=1683131221~hmac=3c34a4c07b5a56a1fb92f3065aa3ceb984fdf41f6cf2e71c9fdc770df12aef4c"
-            alt=""
-          />
+          {post.userImg && <img src={post.userImg} alt="" />}
           <div className="info">
-            <span>John</span>
-            <p>Posted 2 days ago</p>
+            <span>{post.username}</span>
+            <p>Posted {moment(post.date).fromNow()}</p>
           </div>
+          {currentUser.username === post.username && (
           <div className="edit">
             <Link to={`/write?edit=2`}>
               <img src={Edit} alt="edit" />
             </Link>
-            <img src={Delete} alt="edit" />
+            <img onClick={handleDelete} src={Delete} alt="edit" />
           </div>
+          )}
         </div>
-        <h1>Birds are vertebrate animals adapted for flight.</h1>
-        <p>
+        <h1>{post.title}</h1>
+        {post.description}
+        {/* Birds are vertebrate animals adapted for flight. */}
+        {/* <p>
           Many can also run, jump, swim, and dive. Some, like penguins, have lost the ability to fly
           but retained their wings. Birds are found worldwide and in all habitats. The largest is
           the nine-foot-tall ostrich. The smallest is the two-inch-long bee hummingbird.
@@ -62,9 +92,9 @@ const Single = () => {
           The fossil record shows that birds evolved alongside the dinosaurs during the Jurassic
           period 160 million years ago. The best known fossil is archaeopteryx, which was about the
           size of a crow.
-        </p>
+        </p> */}
       </div>
-      <Menu />
+      <Menu cat={post.cat} />
     </div>
   );
 };
